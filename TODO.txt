@@ -1,0 +1,18 @@
+Mettre à part lib ft/ftdb
+Appli ftdb-sync
+
+Appli ft-inventory
+
+- Faire une vue part-contains + part avec labels
+- Idem box
+
+- Création Box depuis un kit :
+   - boxtype associé au kit
+   - proposer un tableau de contenu selon le contenu du kit
+   
+- Edition contenu :
+   - poss d'incrémenter/décrémenter/éditer les qtés
+   - ajout / suppression de lignes
+   
+- Rapport inventaire par box + total avec images pièces
+
