@@ -46,7 +46,7 @@ public class Color {
           colorLabel = color.label;
         }
         else {
-          // Créer le label et la couleur
+          // CrÃ©er le label et la couleur
           colorLabel = new MultilingualLabel(-1, labelId);
           color = new Color(colorId, colorLabel);
           colors.put(colorId, color);

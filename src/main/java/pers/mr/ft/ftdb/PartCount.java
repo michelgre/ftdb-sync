@@ -11,7 +11,7 @@ public class PartCount {
   }
   
   public void setCount(int count) {
-    // Selon que l'on a une valeur pour ftdbCount (le compte a été modifié manuellement) ou pas,
+    // Selon que l'on a une valeur pour ftdbCount (le compte a Ã©tÃ© modifiÃ© manuellement) ou pas,
     // on manipule count ou ftdbCount.
     if (this.ftdbCount == null) { // Valeur FTDB dans count
       if (this.count!=count) {

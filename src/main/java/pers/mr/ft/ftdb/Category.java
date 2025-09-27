@@ -53,12 +53,12 @@ public class Category {
   }
   
   public void setData (Connection db, String ftdbName, Category parentCategory) {
-    // Mise à jour / création ?
+    // Mise Ã  jour / crÃ©ation ?
     FTDB ftdb = FTDB.getInstance();
     if (inDB) {
-      // Existe déjà
+      // Existe dÃ©jÃ 
       
-      // Mise à jour ?
+      // Mise Ã  jour ?
       if (!this.name.get(ftdb.getDbLang()).equals(ftdbName)) {
         this.name.setLabel(ftdb.getDbLang(), ftdbName);
         changed = true;
@@ -85,7 +85,7 @@ public class Category {
       }
     }
     else {
-      // Nouvelle catégorie
+      // Nouvelle catÃ©gorie
       this.name = MultilingualLabel.findInDB(db, id, ftdb.getDbLang(), ftdbName);
       this.parentCategory = parentCategory;
       changed = true;
@@ -105,7 +105,7 @@ public class Category {
   }
   
   public static Category loadFromDB(Connection db, Integer id) {
-    // Si on l'a déjà chargée on garde celle cachée
+    // Si on l'a dÃ©jÃ  chargÃ©e on garde celle cachÃ©e
     Category cat = loadedCategories.get(id);
     
     if (cat==null) {
@@ -160,7 +160,7 @@ public class Category {
         // Enregistre la fiche 
         PreparedStatement stmt;
         if (!inDB) {
-          // Pas déjà en base
+          // Pas dÃ©jÃ  en base
           stmt = db.prepareStatement("INSERT INTO category "+
               " (id, parent_id, label_id) "+
               " VALUES (?,?,?)");
@@ -170,7 +170,7 @@ public class Category {
           stmt.setInt(numParam++, nameId);
         }
         else {
-          // Mise à jour
+          // Mise Ã  jour
           stmt = db.prepareStatement("UPDATE category SET "+
               " parent_id = ?, label_id = ?"+
               "WHERE id = ?");
@@ -186,11 +186,11 @@ public class Category {
           changed = false;
         }
         else {
-          // Pas de ligne créée / maj ==> erreur ???
-          logger.error("Pas de ligne mise à jour sur part #"+id);
+          // Pas de ligne crÃ©Ã©e / maj ==> erreur ???
+          logger.error("Pas de ligne mise Ã  jour sur part #"+id);
         }
       } catch (SQLException e) {
-        logger.error("Enregistrement de pièce: "+e.getMessage());
+        logger.error("Enregistrement de piÃ¨ce: "+e.getMessage());
       }
     }
     

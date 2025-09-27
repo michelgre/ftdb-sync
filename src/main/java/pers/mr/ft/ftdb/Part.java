@@ -50,21 +50,21 @@ public class Part {
   public static Part loadFromFTDB(Connection db, Integer partId, boolean withContent) throws FTDBException {
     FTDB ftdb = FTDB.getInstance();
     
-    // On ne recharge pas la piËce si on la dÈj‡ chargÈe depuis FTDB dans cette session
+    // On ne recharge pas la pi√®ce si on la d√©j√† charg√©e depuis FTDB dans cette session
     Part part = loadedFromFTDB.get(partId);
     if (part==null) {
-      // Pas dÈj‡ chargÈ depuis FTDB
+      // Pas d√©j√† charg√© depuis FTDB
       try {
         logger.info(""+loadedFromFTDB.size()+" - Charge Part "+partId);
         JSONObject jsonPart = ftdb.readJsonFromUrl("/api/ticket/"+partId).getJSONObject("results");
         part = new Part(db, jsonPart);
         loadedFromFTDB.put(partId, part);
         if (withContent && part!=null && part.isKit()) {
-          part.loadContentFromFTDB(db, withContent); // Si on charge le contenu on le fait de faÁon rÈcursive, pour l'instant
+          part.loadContentFromFTDB(db, withContent); // Si on charge le contenu on le fait de fa√ßon r√©cursive, pour l'instant
         }
       } catch (JSONException | IOException e) {
         logger.error(e.getMessage());
-        throw new FTDBException("Chargement d'une piËce: "+e.getMessage(), e);
+        throw new FTDBException("Chargement d'une pi√®ce: "+e.getMessage(), e);
       }
     }
     
@@ -85,7 +85,7 @@ public class Part {
       }
       int numPage = 1;
       while (numPage<=totalPages) {
-        if (numPage > 1) { // 1e page dÈj‡ lue
+        if (numPage > 1) { // 1e page d√©j√† lue
           String sep = "&";
           if (!partsPath.contains("?")) {
             sep = "?"; 
@@ -97,7 +97,7 @@ public class Part {
           JSONObject json = jsonParts.getJSONObject(iPart);
           
           // L'item json n'est pas complet dans une demande de liste d'items
-          // Il faut relancer une requÍte sur cet item.
+          // Il faut relancer une requ√™te sur cet item.
           Integer partId = (Integer) json.get(FTDBField.PartId.getFtdbName());
           Integer count = 1;
           if (withCount) {
@@ -109,7 +109,7 @@ public class Part {
             part.save(db, false);
             partCounts.add(new PartCount(part, count));
           } catch (FTDBException e) {
-            logger.error("Chargement de la piËce "+partId+" impossible");
+            logger.error("Chargement de la pi√®ce "+partId+" impossible");
           }
           
         }
@@ -137,14 +137,14 @@ public class Part {
         content.put(pieceId, partCount);
       }
       else {
-        currentPartCount.setCount(partCount.getCount()); // Mise ‡ jour Èventuelle si count change
+        currentPartCount.setCount(partCount.getCount()); // Mise √† jour √©ventuelle si count change
       }
-      newParts.put(pieceId, partCount); // Pour chercher ensuite celles ‡ supprimer
+      newParts.put(pieceId, partCount); // Pour chercher ensuite celles √† supprimer
     }
     for (PartCount partCount: content.values()) {
       Integer partId = partCount.getPart().getId();
       if (!newParts.containsKey(partId)) {
-        // Ancienne piËce ‡ supprimer
+        // Ancienne pi√®ce √† supprimer
         partCount.setStatus(ElementStatus.Removed);
       }
     }
@@ -152,11 +152,11 @@ public class Part {
   
   public Part(Connection db, JSONObject json) {
     
-    // On recherche l'objet en base si possible pour vÈrifier les changements
+    // On recherche l'objet en base si possible pour v√©rifier les changements
     this.partId = (Integer) json.get(FTDBField.PartId.getFtdbName());
     loadFromDB(db);
     
-    // A faire avant le traitement des champs JSON car on modifie Èventuellement le titre
+    // A faire avant le traitement des champs JSON car on modifie √©ventuellement le titre
     // Titre => multilingue
     String ftdbTitle = (String) FTDBField.Title.get(json);
     
@@ -167,12 +167,12 @@ public class Part {
       changed = true;
     }
     
-    // Si on a une couleur on enlËve l'info du label
+    // Si on a une couleur on enl√®ve l'info du label
     if (color!=null) {
       String toRemove = "(" + color.getFTDBName() + ")";
       ftdbTitle = ftdbTitle.replace(toRemove, "");
       ftdbTitle = ftdbTitle.trim();
-      // Certaines couleurs ont un blanc ‡ la fin (chrom-farben )
+      // Certaines couleurs ont un blanc √† la fin (chrom-farben )
       toRemove = "(" + color.getFTDBName() + " )";
       ftdbTitle = ftdbTitle.replace(toRemove, "");
       ftdbTitle = ftdbTitle.trim();
@@ -189,25 +189,25 @@ public class Part {
             this.changed = true;
           }
         } catch (JSONException e) {
-          // Valeur non prÈsente
+          // Valeur non pr√©sente
         }
       }
     }
     
-    // Cas spÈciaux: labels multilingues, catÈgorie,...
+    // Cas sp√©ciaux: labels multilingues, cat√©gorie,...
     FTDB ftdb = FTDB.getInstance();
     
     // Recherche du label :
-    //  - s'il est dÈj‡ chargÈ on regarde s'il faut le mettre ‡ jour
-    //  - sinon on le recherche en base et/ou on le crÈe
+    //  - s'il est d√©j√† charg√© on regarde s'il faut le mettre √† jour
+    //  - sinon on le recherche en base et/ou on le cr√©e
     if (ftdbTitle!=null) {
       if (titleLabel==null) {
-        // Label pas encore crÈÈ/chargÈ
+        // Label pas encore cr√©√©/charg√©
         this.titleLabel = MultilingualLabel.findInDB(db, partId, ftdb.getDbLang(), ftdbTitle);
       }
       else {
         if (!ftdbTitle.equals(titleLabel.get(ftdb.getDbLang()))) {
-          // Label changÈ
+          // Label chang√©
           titleLabel.setLabel(ftdb.getDbLang(), ftdbTitle);
           changed = true;
         }
@@ -222,27 +222,27 @@ public class Part {
     String ftdbDescription = (String) FTDBField.Description.get(json);
     if (ftdbDescription!=null) {
       if (descriptionLabel==null) {
-        // Label pas encore crÈÈ/chargÈ
+        // Label pas encore cr√©√©/charg√©
         this.descriptionLabel = MultilingualLabel.findInDB(db, partId, ftdb.getDbLang(), ftdbDescription);
       }
       else {
         if (!ftdbDescription.equals(descriptionLabel.get(ftdb.getDbLang()))) {
-          // Label changÈ
+          // Label chang√©
           descriptionLabel.setLabel(ftdb.getDbLang(), ftdbDescription);
           changed = true;
         }
       }
     }
     
-    // HiÈrarchie de catÈgories : on en profite pour rÈcupÈrer les informations sur les catÈgories
-    // Les noms sont rÈcupÈrables dans le champ: ft_cat_all_formatted": "Bauk‰sten &gt; Einstieg &gt; 3-6 + modell &gt; 3"
-    // L'ordre est inverse du tableau de codes de catÈgories.
+    // Hi√©rarchie de cat√©gories : on en profite pour r√©cup√©rer les informations sur les cat√©gories
+    // Les noms sont r√©cup√©rables dans le champ: ft_cat_all_formatted": "Bauk√§sten &gt; Einstieg &gt; 3-6 + modell &gt; 3"
+    // L'ordre est inverse du tableau de codes de cat√©gories.
     JSONArray cats = json.getJSONArray(FTDBField.FTCat.getFtdbName());
     String htmlFormattedCategories = json.getString("ft_cat_all_formatted");
     String sep = ""+(char) 160 + "&gt; ";
     String[] categoryLabels = htmlFormattedCategories.split(sep);
     
-    // Parcourir le tableau de codes de catÈgories en commenÁant par le dernier qui est le plus gÈnÈral, et le premier
+    // Parcourir le tableau de codes de cat√©gories en commen√ßant par le dernier qui est le plus g√©n√©ral, et le premier
     // dans la chaine de labels
     Category parentCategory = null;
     int nbCategories = cats.length();
@@ -251,7 +251,7 @@ public class Part {
       String sCat = (String) cats.get(nbCategories - 1 - i);
       Integer catId = Integer.parseInt(sCat);
       
-      // Si une des catÈgories est un KIT on note qu'il y a un contenu (TODO: sera sans doute gÈnÈralisÈ)
+      // Si une des cat√©gories est un KIT on note qu'il y a un contenu (TODO: sera sans doute g√©n√©ralis√©)
       if (catId==CategoryEnum.ConstructionKit.getCatId()) {
         this.kit = true;
       }
@@ -413,7 +413,7 @@ public class Part {
         // Enregistre la fiche Part
         PreparedStatement stmt;
         if (!inDB) {
-          // Pas dÈj‡ en base
+          // Pas d√©j√† en base
           stmt = db.prepareStatement("INSERT INTO " + getTablename() + " "+
               " (id, type_id, ft_weight, icon, createdUTC, createdByUserName, title_id, description_id, ft_icon, ft_cat, ft_variant_uuid,color_id) "+
               " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -432,7 +432,7 @@ public class Part {
           stmt.setInt(numParam++, color==null ? 0 : color.getId());
         }
         else {
-          // Mise ‡ jour
+          // Mise √† jour
           stmt = db.prepareStatement("UPDATE " + getTablename() + " SET "+
               " type_id = ?, ft_weight = ?, icon = ?, createdUTC = ?, createdByUserName = ?, title_id = ?, description_id = ?, ft_icon = ?, ft_cat = ?, ft_variant_uuid = ?, color_id = ?"+
               "WHERE id = ?");
@@ -457,8 +457,8 @@ public class Part {
           changed = false;
         }
         else {
-          // Pas de ligne crÈÈe / maj ==> erreur ???
-          logger.error("Pas de ligne mise ‡ jour sur " + getTablename() + " #"+partId);
+          // Pas de ligne cr√©√©e / maj ==> erreur ???
+          logger.error("Pas de ligne mise √† jour sur " + getTablename() + " #"+partId);
         }
         
         // Enregistrement du contenu
@@ -481,7 +481,7 @@ public class Part {
             res = stmt.executeUpdate();
             break;
           case Updated:
-            // Attention: selon que l'on a modifiÈ manuellement ou non le nombre de piËces, la valeur lue dans FTDB
+            // Attention: selon que l'on a modifi√© manuellement ou non le nombre de pi√®ces, la valeur lue dans FTDB
             // doit aller dans count ou dans ftdb_count.
             String countFieldName = "count";
             int newCount = pc.getCount();
@@ -538,7 +538,7 @@ public class Part {
         }
         db.commit();
       } catch (SQLException e) {
-        logger.error("Enregistrement de piËce: "+e.getMessage());
+        logger.error("Enregistrement de pi√®ce: "+e.getMessage());
         try {
           db.rollback();
         } catch (SQLException e1) {

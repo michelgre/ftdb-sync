@@ -44,7 +44,7 @@ public class MultilingualLabel {
       }
     }
     else {
-      // Suppression d'un label ??? Non inplÈmentÈ
+      // Suppression d'un label ??? Non inpl√©ment√©
     }
     return this;
   }
@@ -54,7 +54,7 @@ public class MultilingualLabel {
   }
   
   /*
-   * Recherche d'un label en base par son utilisation (id de l'item parent) et son libellÈ
+   * Recherche d'un label en base par son utilisation (id de l'item parent) et son libell√©
    */
   public static MultilingualLabel findInDB(Connection db, Integer parentId, LanguageCode lang, String label) {
     PreparedStatement stmt = null;
@@ -133,7 +133,7 @@ public class MultilingualLabel {
   }
   
   /*
-   * Enregistrement en base, Èventuellement partiel si lang est fourni
+   * Enregistrement en base, √©ventuellement partiel si lang est fourni
    */
   public void save(Connection db, LanguageCode lang) {
     PreparedStatement stmt = null;
@@ -143,7 +143,7 @@ public class MultilingualLabel {
       return;
     }
     
-    // Si la langue est forcÈe il faut avoir cette langue
+    // Si la langue est forc√©e il faut avoir cette langue
     if (lang!=null && !localizedLabels.containsKey(lang)) {
       return;
     }
@@ -177,8 +177,8 @@ public class MultilingualLabel {
           }
         }
         else {
-          // On a l'id de label mais il faut peut etre creer/m‡j les langues : vÈrifier si le update touche des lignes
-          // et sinon les crÈer
+          // On a l'id de label mais il faut peut etre creer/m√†j les langues : v√©rifier si le update touche des lignes
+          // et sinon les cr√©er
           stmt = db.prepareStatement("UPDATE Multilingual_Label SET label = ?, version = version + 1 WHERE id = ? AND langcode = ?");
           int numParam = 1;
           stmt.setString(numParam++, localizedLabels.get(oneLang));
@@ -186,7 +186,7 @@ public class MultilingualLabel {
           stmt.setString(numParam++, oneLang.toString());
           int rowCount = stmt.executeUpdate();
           if (rowCount==0) {
-            // Pas de ligne ‡ m‡j, la crÈer
+            // Pas de ligne √† m√†j, la cr√©er
             stmt = db.prepareStatement("INSERT INTO Multilingual_Label (id,parent_id, langcode, label) VALUES (?,?,?,?)");
             numParam = 1;
             stmt.setInt(numParam++, id);

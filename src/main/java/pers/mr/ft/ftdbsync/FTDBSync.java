@@ -70,7 +70,7 @@ public class FTDBSync {
   public List<Part> loadByCategory(int catId, boolean withContent) {
     // URL: https://ft-datenbank.de/api/tickets?drill_ft_cat_all=<cat>
     //
-    // Les rÈsultats sont paginÈs.
+    // Les r√©sultats sont pagin√©s.
     
     List<PartCount> partCounts = Part.loadPaginagedPartListFromFTDB(dbConnection, "/api/tickets?drill_ft_cat_all="+catId, false, withContent);
     List<Part> parts = new LinkedList<>();
@@ -87,7 +87,7 @@ public class FTDBSync {
       part.save(dbConnection, forceSave);
       parts.add(part);
     } catch (FTDBException e) {
-      logger.error("Chargement de la piËce "+partId+" impossible");
+      logger.error("Chargement de la pi√®ce "+partId+" impossible");
     }
     return parts;
   }
@@ -108,7 +108,7 @@ public class FTDBSync {
 
 
   public List<Part> synchronizeParts(int rootCategory) {
-    // RÈcupËre la liste de kits: type_id = 653
+    // R√©cup√®re la liste de kits: type_id = 653
     List<Part> kitsList = loadByCategory(rootCategory, true);
     return kitsList;
   }
@@ -129,7 +129,7 @@ public class FTDBSync {
   }
   
   public void synchronizeImages(List<Part> updatedParts, boolean forceLoadFT) {
-    // On ne rÈcupËrera que les images pas encore chargÈes, ‡ voir si on peut faire par rapport ‡ la date,
+    // On ne r√©cup√®rera que les images pas encore charg√©es, √† voir si on peut faire par rapport √† la date,
     // sauf si forceLoadFT
     Set<Integer> imagesToLoad = new HashSet<Integer>();
     for (Part part: updatedParts) {
@@ -145,7 +145,7 @@ public class FTDBSync {
       thumbnailDirectory.mkdirs();
     }
     
-    // Recherche des images rÈfÈrencÈes dans la base ou dans FTDB mais sans contenu
+    // Recherche des images r√©f√©renc√©es dans la base ou dans FTDB mais sans contenu
     try {
       int iconCount = 0;
       StringBuffer querySb = new StringBuffer();
@@ -153,7 +153,7 @@ public class FTDBSync {
       
       if (updatedParts!=null) {
         if (updatedParts.size()==0) {
-          // Pas de parts ‡ m‡j
+          // Pas de parts √† m√†j
           return;
         }
         querySb.append(" AND p.ft_icon IN (");
@@ -184,7 +184,7 @@ public class FTDBSync {
             logger.info("Chargement Image " + iconId);
             Image image = Image.loadFromFTDB(dbConnection, iconId, false);
             image.save(dbConnection);
-            imagesToLoad.remove(iconId); // Cette image a ÈtÈ chargÈe
+            imagesToLoad.remove(iconId); // Cette image a √©t√© charg√©e
             if (saveImageTofiles) {
               image.saveImageToFile(imageDirectory);
               image.saveThumbnailToFile(thumbnailDirectory);
@@ -199,13 +199,13 @@ public class FTDBSync {
       e.printStackTrace();
     }
     
-    // Si chargement forcÈ, on charge aussi les images restantes
+    // Si chargement forc√©, on charge aussi les images restantes
     for (Integer iconId: imagesToLoad) {
       try {
         logger.info("Chargement Image " + iconId);
         Image image = Image.loadFromFTDB(dbConnection, iconId, false);
         image.save(dbConnection);
-        imagesToLoad.remove(iconId); // Cette image a ÈtÈ chargÈe
+        imagesToLoad.remove(iconId); // Cette image a √©t√© charg√©e
         if (saveImageTofiles) {
           image.saveImageToFile(imageDirectory);
           image.saveThumbnailToFile(thumbnailDirectory);
@@ -243,7 +243,7 @@ public class FTDBSync {
     // Charger la liste des couleurs pour l'analyse des labels
     Color.loadAllFromDB(dbConnection);
     
-    // Liste des piËces reÁues
+    // Liste des pi√®ces re√ßues
     List<Part> updatedParts = null;
     
     if (doParts) {

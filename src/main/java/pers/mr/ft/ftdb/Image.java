@@ -46,13 +46,13 @@ public class Image {
   public static Image loadFromFTDB(Connection db, Integer id, boolean force) throws FTDBException {
     FTDB ftdb = FTDB.getInstance();
     
-    // On ne recharge pas l'image si on la dÈj‡ chargÈe
+    // On ne recharge pas l'image si on la d√©j√† charg√©e
     Image image = loadedFromFTDB.get(id);
     if (image==null) {
-      // Pas dÈj‡ chargÈ depuis FTDB
+      // Pas d√©j√† charg√© depuis FTDB
       try {
         image = loadFromDB(db, id);
-        if (image.image==null || force) { // Ne pas recharger les images dÈj‡ en base sauf si force
+        if (image.image==null || force) { // Ne pas recharger les images d√©j√† en base sauf si force
           logger.info(""+loadedFromFTDB.size()+" - Charge Image "+id);
           URL url = new URL(ftdb.getUrl()+"/binary/"+id);
           
@@ -71,7 +71,7 @@ public class Image {
         }
       } catch (JSONException | IOException e) {
         logger.error(e.getMessage());
-        throw new FTDBException("Chargement d'une piËce: "+e.getMessage(), e);
+        throw new FTDBException("Chargement d'une pi√®ce: "+e.getMessage(), e);
       }
     }
     return image;
@@ -191,7 +191,7 @@ public class Image {
           changed = false;
         }
       } catch (SQLException e) {
-        logger.error("Erreur ‡ l'enregistrement de l'image "+id+": "+e.getMessage());
+        logger.error("Erreur √† l'enregistrement de l'image "+id+": "+e.getMessage());
       } finally {
       }
     }
@@ -218,7 +218,7 @@ public class Image {
     if (image!=null) {
       try {
         // Format de l'image ?
-        String ext = "png" ; // Par dÈfaut
+        String ext = "png" ; // Par d√©faut
         ByteArrayInputStream bais = new ByteArrayInputStream(image);
         ImageInputStream iis = ImageIO.createImageInputStream(bais);
         Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(iis);
